@@ -1,0 +1,11 @@
+{
+  "name": "movies_and_series",
+  "version": "1.0.0",
+  "description": "A project, where we consume a REST API in a web application about series and movies",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "oscar",
+  "license": "MIT"
+}
