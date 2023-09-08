@@ -17,8 +17,8 @@ async function getTrendingMoviesPreview() {
   const movies = data.results;
   console.log(movies);
 
+  trendingMoviesPreviewList.innerHTML = "";
   movies.forEach(movie => {
-    trendingMoviesPreviewList;
 
     const movieContainer = document.createElement("div");
     movieContainer.classList.add("movie-container");
@@ -38,8 +38,8 @@ async function getGenresPreview() {
   const genres = data.genres;
   console.log(genres);
 
+  categoriesPreviewList.innerHTML = "";
   genres.forEach(genre => {
-    categoriesPreviewList;
 
     const genreContainer = document.createElement("div");
     genreContainer.classList.add("category-container");
