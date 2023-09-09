@@ -49,6 +49,14 @@ function genresPages() {
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
+
+  const [_, categoryData] = location.hash.split('=');
+  console.log(categoryData);
+  const [categoryId, categoryName] = categoryData.split('-');
+  console.log(categoryName);
+  headerCategoryTitle.innerHTML = categoryName;
+
+  getMoviesByGenres(categoryId);
 }
 
 function movieDetailsPage() {
