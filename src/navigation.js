@@ -4,7 +4,7 @@ function navigator() {
     trendsPage();
   } else if (location.hash.startsWith("#search=")) {
     searchPage();
-  } else if (location.hash.startsWith("#movies=")) {
+  } else if (location.hash.startsWith("#movie=")) {
     movieDetailsPage();
   } else if (location.hash.startsWith("#genres=")) {
     genresPages();
@@ -77,6 +77,9 @@ function movieDetailsPage() {
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.add("inactive");
   movieDetailSection.classList.remove("inactive");
+
+  const [_ , movieId] = location.hash.split("=");
+  getMovieById(movieId);
 }
 
 function searchPage() {
