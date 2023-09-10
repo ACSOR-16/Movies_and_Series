@@ -12,6 +12,7 @@ const URL_IMG_300 = "https://image.tmdb.org/t/p/w300";
 const TREND_URL = "trending/movie/week";
 const GENRE_URL = "discover/movie";
 const GENRES_API = "genre/movie/list";
+const SEARCH_API = "search/movie";
 
 async function getTrendingMoviesPreview() {
   const {data} = await api(TREND_URL);
@@ -39,6 +40,15 @@ async function getMoviesByGenres(id) {
   createMovies(moviesByGenres, genericSection);
 }
 
+async function getSearchMoviesByValue (query) {
+  const {data} = await api(SEARCH_API, {
+    params: {query}
+  });
+  const moviesByQuery = data.results;
+  console.log(moviesByQuery);
+  
+  createMovies(moviesByQuery, genericSection);
+}
 
 // UTILS
 function createMovies(movies, container) {
