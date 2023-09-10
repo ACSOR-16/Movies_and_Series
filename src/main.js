@@ -22,6 +22,15 @@ async function getTrendingMoviesPreview() {
   createMovies(movies, trendingMoviesPreviewList);
 }
 
+async function getTrendingMovies() {
+  const {data} = await api(TREND_URL);
+  const movies = data.results;
+  console.log(movies);
+
+  createMovies(movies, genericSection);
+}
+
+
 async function getGenresPreview() {
   const {data} = await api(GENRES_API);
   const genres = data.genres;

@@ -13,7 +13,7 @@ function navigator() {
   }
     
   document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
+  // document.body.scrollTop = 0;
   // window.scrollTo(0, 0);
 }
 
@@ -96,7 +96,9 @@ function searchPage() {
   movieDetailSection.classList.add("inactive");
 
   const [_, query] = location.hash.split("=");
-  getSearchMoviesByValue(query);
+  console.log(query);
+  const newQuery = query.replace("%20", " ");
+  getSearchMoviesByValue(newQuery);
 }
 
 function trendsPage() {
@@ -114,10 +116,13 @@ function trendsPage() {
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
+
+  headerCategoryTitle.innerHTML = "Trends";
+  getTrendingMovies();
 }
 
 arrowBtn.addEventListener("click", () => {
-  history.back();
+  // history.back();
   location.hash = "#home"
 });
 searchForm.addEventListener("click", () => {
