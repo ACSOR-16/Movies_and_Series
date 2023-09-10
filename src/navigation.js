@@ -12,6 +12,9 @@ function navigator() {
     homePage();
   }
     
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  // window.scrollTo(0, 0);
 }
 
 function homePage() {
@@ -51,10 +54,10 @@ function genresPages() {
   movieDetailSection.classList.add("inactive");
 
   const [_, categoryData] = location.hash.split('=');
-  console.log(categoryData);
   const [categoryId, categoryName] = categoryData.split('-');
-  console.log(categoryName);
-  headerCategoryTitle.innerHTML = categoryName;
+  const newCategoryName = categoryName.replace("%20", " ");
+  
+  headerCategoryTitle.innerHTML = newCategoryName;
 
   getMoviesByGenres(categoryId);
 }
