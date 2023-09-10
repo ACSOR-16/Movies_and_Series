@@ -12,7 +12,7 @@ const URL_IMG_300 = "https://image.tmdb.org/t/p/w300";
 const URL_IMG_500 = "https://image.tmdb.org/t/p/w500";
 
 const TREND_URL = "trending/movie/week";
-const VIDEO_URL = "movie/"
+const VIDEO_URL = "movie/";
 const GENRE_URL = "discover/movie";
 const GENRES_API = "genre/movie/list";
 const SEARCH_API = "search/movie";
@@ -79,8 +79,16 @@ async function getMovieById(id) {
   movieDetailScore.textContent = movie.vote_average;
 
   createGenres(movie.genres, movieDetailCategoriesList);
+
+  getRelatedMoviesById(id);
 }
 
+async function getRelatedMoviesById(id) {
+  const {data} = await api(`movie/${id}/recommendations`);
+  const relatedMovies = data.results;
+
+  createMovies(relatedMovies, relatedMoviesContainer);
+}
 // UTILS
 function createMovies(movies, container) {
   container.innerHTML = "";
