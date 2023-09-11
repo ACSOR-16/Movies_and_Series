@@ -22,7 +22,7 @@ async function getTrendingMoviesPreview() {
   const movies = data.results;
   // console.log(movies);
 
-  createMovies(movies, trendingMoviesPreviewList);
+  createMovies(movies, trendingMoviesPreviewList, true);
 }
 
 async function getTrendingMovies() {
@@ -90,7 +90,17 @@ async function getRelatedMoviesById(id) {
   createMovies(relatedMovies, relatedMoviesContainer);
 }
 // UTILS
-function createMovies(movies, container) {
+const lazyLoader = new IntersectionObserver( (entries) => {
+  entries.forEach( (entry) => {
+    if (entry.isIntersecting) {
+      const url = entry.target.getAttribute("data-img");
+      entry.target.setAttribute("src", url)
+  
+    }
+  });
+});
+
+function createMovies(movies, container, lazyLoad = false) {
   container.innerHTML = "";
 
   movies.forEach( movie => {
@@ -103,8 +113,14 @@ function createMovies(movies, container) {
     const movieImg = document.createElement("img");
     movieImg.classList.add("movie-img");
     movieImg.setAttribute("alt", movie.title);
-    movieImg.setAttribute("src", URL_IMG_300 + movie.poster_path);
+    movieImg.setAttribute(
+      lazyLoad ? "data-img" : "src", 
+      URL_IMG_300 + movie.poster_path
+      );
 
+    if (lazyLoad) {
+      lazyLoader.observe(movieImg);
+    }
     
     movieContainer.appendChild(movieImg);
     container.appendChild(movieContainer);
