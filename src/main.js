@@ -49,7 +49,7 @@ async function getMoviesByGenres(id) {
   const moviesByGenres = data.results;
   // console.log(moviesByGenres);
   
-  createMovies(moviesByGenres, genericSection);
+  createMovies(moviesByGenres, genericSection, true);
 }
 
 async function getSearchMoviesByValue (query) {
@@ -117,6 +117,11 @@ function createMovies(movies, container, lazyLoad = false) {
       lazyLoad ? "data-img" : "src", 
       URL_IMG_300 + movie.poster_path
       );
+    movieImg.addEventListener("error", () => {
+      movieImg.setAttribute(
+        'src',
+        'https://static.platzi.com/static/images/error/img404.png'); 
+    });
 
     if (lazyLoad) {
       lazyLoader.observe(movieImg);
