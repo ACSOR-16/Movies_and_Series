@@ -20,7 +20,7 @@ const SEARCH_API = "search/movie";
 async function getTrendingMoviesPreview() {
   const {data} = await api(TREND_URL);
   const movies = data.results;
-  console.log(movies);
+  // console.log(movies);
 
   createMovies(movies, trendingMoviesPreviewList);
 }
@@ -28,7 +28,7 @@ async function getTrendingMoviesPreview() {
 async function getTrendingMovies() {
   const {data} = await api(TREND_URL);
   const movies = data.results;
-  console.log(movies);
+  // console.log(movies);
 
   createMovies(movies, genericSection);
 }
@@ -37,7 +37,7 @@ async function getTrendingMovies() {
 async function getGenresPreview() {
   const {data} = await api(GENRES_API);
   const genres = data.genres;
-  console.log(genres);
+  // console.log(genres);
 
   createGenres(genres, categoriesPreviewList);
 }
@@ -47,7 +47,7 @@ async function getMoviesByGenres(id) {
     params: {with_genres: id}
   });
   const moviesByGenres = data.results;
-  console.log(moviesByGenres);
+  // console.log(moviesByGenres);
   
   createMovies(moviesByGenres, genericSection);
 }
@@ -57,7 +57,7 @@ async function getSearchMoviesByValue (query) {
     params: {query}
   });
   const moviesByQuery = data.results;
-  console.log(moviesByQuery);
+  // console.log(moviesByQuery);
   
   createMovies(moviesByQuery, genericSection);
 }
@@ -73,7 +73,7 @@ async function getMovieById(id) {
     rgba(0, 0, 0, 0) 29.17%
     ),
     url(${movieImgBackground})`
-  console.log(movie);
+  // console.log(movie);
   movieDetailTitle.textContent = movie.title;
   movieDetailDescription.textContent = movie.overview;
   movieDetailScore.textContent = movie.vote_average;
