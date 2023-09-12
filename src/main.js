@@ -30,9 +30,13 @@ async function getTrendingMovies() {
   const movies = data.results;
   // console.log(movies);
 
-  createMovies(movies, genericSection);
+  createMovies(movies, genericSection, {lazyLoad: true, clean: true});
+  
+  const buttonLoadMore = document.createElement("button");
+  buttonLoadMore.innerText = "More";
+  buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
+  genericSection.appendChild(buttonLoadMore);
 }
-
 
 async function getGenresPreview() {
   const {data} = await api(GENRES_API);
@@ -89,6 +93,28 @@ async function getRelatedMoviesById(id) {
 
   createMovies(relatedMovies, relatedMoviesContainer);
 }
+
+let page = 1;
+async function getPaginatedTrendingMovies() {
+  page++;
+  const {data} = await api(TREND_URL, {
+    params: {
+      page,
+    }
+  });
+  const movies = data.results;
+
+  createMovies(
+    movies, 
+    genericSection,
+    {lazyLoad: true, clean: false}
+  );
+
+  const buttonLoadMore = document.createElement("button");
+  buttonLoadMore.innerText = "More";
+  buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
+  genericSection.appendChild(buttonLoadMore);
+}
 // UTILS
 const lazyLoader = new IntersectionObserver( (entries) => {
   entries.forEach( (entry) => {
@@ -100,8 +126,15 @@ const lazyLoader = new IntersectionObserver( (entries) => {
   });
 });
 
-function createMovies(movies, container, lazyLoad = false) {
-  container.innerHTML = "";
+function createMovies(
+  movies,
+  container,
+  {lazyLoad = false, clean = true} = {}
+  ) {
+
+  if (clean) {
+    container.innerHTML = "";
+  }
 
   movies.forEach( movie => {
     const movieContainer = document.createElement("div");
