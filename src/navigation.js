@@ -1,5 +1,13 @@
+let page = 1;
+let infiniteScroll;
 
 function navigator() {
+
+  if (infiniteScroll) {
+    window.removeEventListener("scroll",infiniteScroll, {passive: false});
+    infiniteScroll = undefined;
+  }
+
   if (location.hash.startsWith("#trends")) {
     trendsPage();
   } else if (location.hash.startsWith("#search=")) {
@@ -15,6 +23,11 @@ function navigator() {
   document.documentElement.scrollTop = 0;
   // document.body.scrollTop = 0;
   // window.scrollTo(0, 0);
+
+  if (infiniteScroll) {
+    window.addEventListener("scroll",infiniteScroll, {passive: false});
+    // infiniteScroll = undefined;
+  }
 }
 
 function homePage() {
@@ -121,7 +134,10 @@ function trendsPage() {
   movieDetailSection.classList.add("inactive");
 
   headerCategoryTitle.innerHTML = "Trends";
+  
   getTrendingMovies();
+
+  infiniteScroll = getPaginatedTrendingMovies;
 }
 
 arrowBtn.addEventListener("click", () => {
@@ -137,3 +153,4 @@ trendingBtn.addEventListener("click", () => {
 });
 window.addEventListener("DOMContentLoaded", navigator, false)
 window.addEventListener("hashchange", navigator, false);
+window.addEventListener("scroll", infiniteScroll, false);

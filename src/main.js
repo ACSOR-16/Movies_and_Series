@@ -32,10 +32,10 @@ async function getTrendingMovies() {
 
   createMovies(movies, genericSection, {lazyLoad: true, clean: true});
   
-  const buttonLoadMore = document.createElement("button");
-  buttonLoadMore.innerText = "More";
-  buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
-  genericSection.appendChild(buttonLoadMore);
+  // const buttonLoadMore = document.createElement("button");
+  // buttonLoadMore.innerText = "More";
+  // buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
+  // genericSection.appendChild(buttonLoadMore);
 }
 
 async function getGenresPreview() {
@@ -94,26 +94,35 @@ async function getRelatedMoviesById(id) {
   createMovies(relatedMovies, relatedMoviesContainer);
 }
 
-let page = 1;
 async function getPaginatedTrendingMovies() {
-  page++;
-  const {data} = await api(TREND_URL, {
-    params: {
-      page,
-    }
-  });
-  const movies = data.results;
+  const {
+    scrollTop,
+    scrollHeight,
+    clientHeight
+  } = document.documentElement;
 
-  createMovies(
-    movies, 
-    genericSection,
-    {lazyLoad: true, clean: false}
-  );
+  const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+  
+  if (scrollIsBottom) {
+    page++;
+    const {data} = await api(TREND_URL, {
+      params: {
+        page,
+      }
+    });
+    const movies = data.results;
+  
+    createMovies(
+      movies, 
+      genericSection,
+      {lazyLoad: true, clean: false}
+    );
+  }
 
-  const buttonLoadMore = document.createElement("button");
-  buttonLoadMore.innerText = "More";
-  buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
-  genericSection.appendChild(buttonLoadMore);
+  // const buttonLoadMore = document.createElement("button");
+  // buttonLoadMore.innerText = "More";
+  // buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
+  // genericSection.appendChild(buttonLoadMore);
 }
 // UTILS
 const lazyLoader = new IntersectionObserver( (entries) => {
