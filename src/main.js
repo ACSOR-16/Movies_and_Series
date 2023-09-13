@@ -19,14 +19,14 @@ function likedMovieList() {
   } else {
     movies = {};
   }
-  console.log(movies);
+  // console.log(movies);
   return movies;
 }
 
 function likeMovie(movie) {
 
   const likedMovies = likedMovieList();
-  console.log(likedMovies);
+  // console.log(likedMovies);
   if (likedMovies[movie.id]) {
     likedMovies[movie.id] = undefined;
   } else {
@@ -223,6 +223,18 @@ async function getRelatedMoviesById(id) {
   createMovies(relatedMovies, relatedMoviesContainer);
 }
 
+// ----- FAVORITE MOVIES -----
+function getLikedMovies() {
+  const likedMovies = likedMovieList();
+  const moviesArray = Object.values(likedMovies);
+
+  createMovies(
+    moviesArray,
+    likedMoviesListContainer,
+    {lazyLoad: true, clean: true}
+    )
+  // console.log(moviesArray);
+}
 
 // ----- UTILS -----
 const lazyLoader = new IntersectionObserver( (entries) => {
@@ -264,13 +276,17 @@ function createMovies(
         'src',
         'https://static.platzi.com/static/images/error/img404.png'); 
     });
+
     const movieBtn = document.createElement('button');
     movieBtn.classList.add('movie-btn');
+    likedMovieList()[movie.id] && movieBtn.classList.add("movie-btn--liked");
     movieBtn.addEventListener('click', (event) => {
       event.stopPropagation()
+
       movieBtn.classList.toggle('movie-btn--liked');
       //  ==== add to local storage ====
       likeMovie(movie);
+      getLikedMovies() 
     });
 
     if (lazyLoad) {
