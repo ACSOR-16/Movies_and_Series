@@ -9,6 +9,33 @@ const api = axios.create({
   },
 });
 
+// ----- LOCAL STORAGE -----
+function likedMovieList() {
+  const item = JSON.parse(localStorage.getItem("liked_movies"));
+  let movies;
+
+  if (item) {
+    movies = item;
+  } else {
+    movies = {};
+  }
+  console.log(movies);
+  return movies;
+}
+
+function likeMovie(movie) {
+
+  const likedMovies = likedMovieList();
+  console.log(likedMovies);
+  if (likedMovies[movie.id]) {
+    likedMovies[movie.id] = undefined;
+  } else {
+    likedMovies[movie.id] = movie;
+  }
+  
+  localStorage.setItem("liked_movies", JSON.stringify(likedMovies));
+}
+
 // ----- ENDPOINTS -----
 const URL_IMG_300 = "https://image.tmdb.org/t/p/w300";
 const URL_IMG_500 = "https://image.tmdb.org/t/p/w500";
@@ -242,7 +269,8 @@ function createMovies(
     movieBtn.addEventListener('click', (event) => {
       event.stopPropagation()
       movieBtn.classList.toggle('movie-btn--liked');
-      
+      //  ==== add to local storage ====
+      likeMovie(movie);
     });
 
     if (lazyLoad) {
