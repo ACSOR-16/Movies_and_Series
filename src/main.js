@@ -1,3 +1,4 @@
+// ----- AXIOS -----
 const api = axios.create({
   baseURL: "https://api.themoviedb.org/3/",
   headers: {
@@ -8,6 +9,7 @@ const api = axios.create({
   },
 });
 
+// ----- ENDPOINTS -----
 const URL_IMG_300 = "https://image.tmdb.org/t/p/w300";
 const URL_IMG_500 = "https://image.tmdb.org/t/p/w500";
 
@@ -17,6 +19,8 @@ const GENRE_URL = "discover/movie";
 const GENRES_API = "genre/movie/list";
 const SEARCH_API = "search/movie";
 
+// ----- HOME PAGE -----
+//  == TRENDS ==
 async function getTrendingMoviesPreview() {
   const {data} = await api(TREND_URL);
   const movies = data.results;
@@ -28,6 +32,7 @@ async function getTrendingMoviesPreview() {
 async function getTrendingMovies() {
   const {data} = await api(TREND_URL);
   const movies = data.results;
+  maxPages = data.total_pages;
   // console.log(movies);
 
   createMovies(movies, genericSection, {lazyLoad: true, clean: true});
@@ -36,62 +41,6 @@ async function getTrendingMovies() {
   // buttonLoadMore.innerText = "More";
   // buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
   // genericSection.appendChild(buttonLoadMore);
-}
-
-async function getGenresPreview() {
-  const {data} = await api(GENRES_API);
-  const genres = data.genres;
-  // console.log(genres);
-
-  createGenres(genres, categoriesPreviewList);
-}
-
-async function getMoviesByGenres(id) {
-  const {data} = await api(GENRE_URL, {
-    params: {with_genres: id}
-  });
-  const moviesByGenres = data.results;
-  // console.log(moviesByGenres);
-  
-  createMovies(moviesByGenres, genericSection, true);
-}
-
-async function getSearchMoviesByValue (query) {
-  const {data} = await api(SEARCH_API, {
-    params: {query}
-  });
-  const moviesByQuery = data.results;
-  // console.log(moviesByQuery);
-  
-  createMovies(moviesByQuery, genericSection);
-}
-
-async function getMovieById(id) {
-  const {data: movie} = await api(VIDEO_URL + id);
-  
-  const movieImgBackground = `${URL_IMG_500}${movie.poster_path}`;
-  headerSection.style.background = `
-  linear-gradient(
-    180deg, 
-    rgba(0, 0, 0, 0.35) 19.27%, 
-    rgba(0, 0, 0, 0) 29.17%
-    ),
-    url(${movieImgBackground})`
-  // console.log(movie);
-  movieDetailTitle.textContent = movie.title;
-  movieDetailDescription.textContent = movie.overview;
-  movieDetailScore.textContent = movie.vote_average;
-
-  createGenres(movie.genres, movieDetailCategoriesList);
-
-  getRelatedMoviesById(id);
-}
-
-async function getRelatedMoviesById(id) {
-  const {data} = await api(`movie/${id}/recommendations`);
-  const relatedMovies = data.results;
-
-  createMovies(relatedMovies, relatedMoviesContainer);
 }
 
 async function getPaginatedTrendingMovies() {
@@ -124,7 +73,131 @@ async function getPaginatedTrendingMovies() {
   // buttonLoadMore.addEventListener("click", getPaginatedTrendingMovies);
   // genericSection.appendChild(buttonLoadMore);
 }
-// UTILS
+
+
+// == GENRES ==
+async function getGenresPreview() {
+  const {data} = await api(GENRES_API);
+  const genres = data.genres;
+  // console.log(genres);
+
+  createGenres(genres, categoriesPreviewList);
+}
+
+async function getMoviesByGenres(id) {
+  const {data} = await api(GENRE_URL, {
+    params: {with_genres: id}
+  });
+  const moviesByGenres = data.results;
+  maxPages = data.total_pages;
+  // console.log(moviesByGenres);
+  
+  createMovies(moviesByGenres, genericSection, {lazyLoad: true});
+}
+
+ function getPaginatedMoviesByGenres(id) {
+  return async function () {
+    const {
+      scrollTop,
+      scrollHeight,
+      clientHeight
+    } = document.documentElement;
+  
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+    const pageIsNotMax = page < maxPages;
+
+    if (scrollIsBottom && pageIsNotMax) {
+      page++;
+      const {data} = await api(TREND_URL, {
+        params: {
+          with_genres: id,
+          page,
+        }
+      });
+      const movies = data.results;
+    
+      createMovies(
+        movies, 
+        genericSection,
+        {lazyLoad: true, clean: false}
+      );
+    }
+  }
+}
+
+//  ----- SEARCH MOVIE ----
+async function getSearchMoviesByValue (query) {
+  const {data} = await api(SEARCH_API, {
+    params: {query}
+  });
+  const moviesByQuery = data.results;
+  maxPages = data.total_pages;
+  // console.log(moviesByQuery);
+  
+  createMovies(moviesByQuery, genericSection);
+}
+
+function getPaginatedMoviesByValue(query) {
+  return async function () {
+    const {
+      scrollTop,
+      scrollHeight,
+      clientHeight
+    } = document.documentElement;
+  
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+    const pageIsNotMax = page < maxPages;
+
+    if (scrollIsBottom && pageIsNotMax) {
+      page++;
+      const {data} = await api(TREND_URL, {
+        params: {
+          query,
+          page,
+        }
+      });
+      const movies = data.results;
+    
+      createMovies(
+        movies, 
+        genericSection,
+        {lazyLoad: true, clean: false}
+      );
+    }
+  }
+}
+
+// ----- MOVIE DETAILS -----
+async function getMovieById(id) {
+  const {data: movie} = await api(VIDEO_URL + id);
+  
+  const movieImgBackground = `${URL_IMG_500}${movie.poster_path}`;
+  headerSection.style.background = `
+  linear-gradient(
+    180deg, 
+    rgba(0, 0, 0, 0.35) 19.27%, 
+    rgba(0, 0, 0, 0) 29.17%
+    ),
+    url(${movieImgBackground})`
+  // console.log(movie);
+  movieDetailTitle.textContent = movie.title;
+  movieDetailDescription.textContent = movie.overview;
+  movieDetailScore.textContent = movie.vote_average;
+
+  createGenres(movie.genres, movieDetailCategoriesList);
+
+  getRelatedMoviesById(id);
+}
+
+async function getRelatedMoviesById(id) {
+  const {data} = await api(`movie/${id}/recommendations`);
+  const relatedMovies = data.results;
+
+  createMovies(relatedMovies, relatedMoviesContainer);
+}
+
+
+// ----- UTILS -----
 const lazyLoader = new IntersectionObserver( (entries) => {
   entries.forEach( (entry) => {
     if (entry.isIntersecting) {

@@ -1,3 +1,4 @@
+let maxPages;
 let page = 1;
 let infiniteScroll;
 
@@ -73,6 +74,8 @@ function genresPages() {
   headerCategoryTitle.innerHTML = newCategoryName;
 
   getMoviesByGenres(categoryId);
+
+  infiniteScroll = getPaginatedMoviesByGenres(categoryId);
 }
 
 function movieDetailsPage() {
@@ -115,6 +118,8 @@ function searchPage() {
   // console.log(query);
   const newQuery = query.replace("%20", " ");
   getSearchMoviesByValue(newQuery);
+
+  infiniteScroll = getPaginatedMoviesByValue(newQuery);
 }
 
 function trendsPage() {
@@ -134,7 +139,7 @@ function trendsPage() {
   movieDetailSection.classList.add("inactive");
 
   headerCategoryTitle.innerHTML = "Trends";
-  
+
   getTrendingMovies();
 
   infiniteScroll = getPaginatedTrendingMovies;
